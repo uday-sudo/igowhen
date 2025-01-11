@@ -1,0 +1,21 @@
+{
+  "name": "Igowhen",
+  "description": "igowhen?",
+  "version": "1.0",
+  "permissions": ["scripting", "activeTab", "storage"],
+  "host_permissions": ["https://people.zoho.in/*"], 
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://people.zoho.in/aihifusion/zp#attendance/entry/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
