@@ -1,23 +1,148 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Extension Popup</title>
+    <title>I go when?</title>
     <style>
+        /* General styling */
         body {
-            font-family: Arial, sans-serif;
-            margin: 10px;
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 300px;
         }
-        #content {
-            padding: 10px;
-            border: 1px solid #ccc;
-            background: #f9f9f9;
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #f39c12;
+        }
+
+        #time_to_leave {
+            font-size: 18px;
+            padding: 15px;
+            border: 1px solid #444;
+            background: #2b2b2b;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Container and input styling */
+        .input-container, .toggle-container {
+            width: 100%;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        label {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #bbbbbb;
+        }
+
+        input[type="number"], input[type="time"], input[type="checkbox"] {
+            width: 100%;
+            padding: 10px 0px 10px 10px;
             font-size: 14px;
+            border: none;
+            border-radius: 6px;
+            background-color: #333;
+            color: #f0f0f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="checkbox"] {
+            width: auto;
+            transform: scale(1.2);
+        }
+
+        input[type="number"]::placeholder, input[type="time"]::placeholder {
+            color: #aaa;
+        }
+
+        input:focus {
+            outline: none;
+            border: 1px solid #f39c12;
+        }
+
+        /* Button styling */
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            background-color: #f39c12;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(243, 156, 18, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #e67e22;
+            box-shadow: 0 4px 8px rgba(243, 156, 18, 0.6);
+        }
+
+        button:active {
+            background-color: #d35400;
+        }
+
+        /* Toggle container */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-container label {
+            font-size: 14px;
+            color: #e0e0e0;
+        }
+
+        #reloadSettings {
+            display: none;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 400px) {
+            body {
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Hello</h1>
-    <div id="content">Loading...</div>
+    <h1>I go when?</h1>
+
+    <div id="time_to_leave">Loading...</div>
+
+    <div class="toggle-container">
+        <input type="checkbox" id="toggleClock">
+        <label for="toggleClock">Enable 24-Hour Clock</label>
+    </div>
+
+    <div class="input-container" id="reloadSettings">
+        <label for="reloadNumber">Reload Minutes:</label>
+        <input type="number" id="reloadNumber" placeholder="Enter a number">
+        <button id="reloadButton">Reload</button>
+    </div>
+
+    <div class="input-container">
+        <label for="maxWorkHours">Set Max Work Hours:</label>
+        <input type="time" id="maxWorkHours">
+    </div>
+
     <script src="popup.js"></script>
 </body>
 </html>
