@@ -1,8 +1,11 @@
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    console.log(tab.url);
     if (
         changeInfo.status === "complete" &&
-        (tab.url.startsWith("https://people.zoho.in/") && tab.url.includes("zp#attendance/entry/summary-mode:list") ||
-         tab.url === "file:///C:/Users/hooman/Downloads/attendance/Zoho%20People.html")
+        tab.url &&
+        (
+            (tab.url.startsWith("https://people.zoho.in/") && tab.url.includes("zp#attendance/entry/summary-mode:list"))
+        )
     ) {
         chrome.scripting.executeScript({
             target: { tabId: tabId },
@@ -11,6 +14,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         console.log("Injected content script on the target page.");
     }
 });
+
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.content) {

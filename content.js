@@ -1,3 +1,4 @@
+console.log("content.js executing")
 const RELOADSEC = 5;
 
 function sleep(time) {
@@ -70,14 +71,28 @@ function main() {
 
 // Execute only when the page is fully loaded
 if (
-    window.location.href.includes("https://people.zoho.in/") && window.location.href.includes("/zp#attendance/entry/summary-mode:list") || 
-    window.location.href === "file:///C:/Users/hooman/Downloads/attendance/Zoho%20People.html"
+    window.location.href.includes("https://people.zoho.in/") &&
+    window.location.href.includes("/zp#attendance/entry/summary-mode:list")
 ) {
-    console.log("Correct page detected. Waiting for the page to fully load...");
-    window.addEventListener("load", () => {
-        console.log("Page fully loaded. Running content script.");
-        main();
-    });
+    console.log("Correct page detected. Waiting for content to be ready...");
+
+    function checkContentReady() {
+        const targetDiv = document.querySelector(".zpl_attentrydtls");
+        if (targetDiv) {
+            console.log("Target content found. Running content script.");
+            clearInterval(checkInterval); // Stop checking once the content is ready
+            main();
+        }
+    }
+
+    // Periodically check for the content every 500ms
+    const checkInterval = setInterval(checkContentReady, 500);
+
+    // Optional: Add a timeout to stop checking after 30 seconds
+    setTimeout(() => {
+        clearInterval(checkInterval);
+        console.log("Timeout reached. Content not found.");
+    }, 30000);
 } else {
     console.log("Content script loaded, but this is not the target page.");
 }
