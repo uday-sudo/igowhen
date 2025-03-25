@@ -84,8 +84,11 @@ function main() {
 
 // Execute only when the page is fully loaded
 if (
-    window.location.href.includes("https://people.zoho.in/") &&
-    window.location.href.includes("/zp#attendance/entry/summary-mode:list")
+    (
+        window.location.href.includes("https://people.zoho.in/") &&
+        window.location.href.includes("/zp#attendance/entry/summary-mode:list")
+    ) ||
+    window.location.href.includes("Zoho%20People.html")
 ) {
     console.log("Correct page detected. Waiting for content to be ready...");
 
