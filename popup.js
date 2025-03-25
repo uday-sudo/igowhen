@@ -38,23 +38,20 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Initial content received");
             contentElement.textContent = response.endTime;
             countdown.textContent = response.remainingTime;
-            // remainingTime = response.remainingTime;
-            // startCountdown();
         } else {
             console.log("No content received from the content script.");
         }
-        checkForUpdate();
     });
 
     // Listen for real-time updates from the content script
     chrome.runtime.onMessage.addListener((message) => {
         if (message.endTime && message.remainingTime) {
-            console.log("Real-time update received");
+            // console.log("Real-time update received");
             contentElement.textContent = message.endTime;
             countdown.textContent = message.remainingTime;
-            // remainingTime = message.remainingTime;
         }
     });
+    checkForUpdate();
 });
 
 // Handle the Force Reload button click

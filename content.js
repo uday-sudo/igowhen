@@ -1,5 +1,5 @@
 console.log("content.js executing");
-const RELOADSEC = 5;
+const RELOADSEC = 0.5;
 
 function sleep(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
@@ -39,7 +39,6 @@ function calculateRemainingTime(endTime) {
 
 async function executeLogic() {
     chrome.storage.local.get(["enable24HourClock", "reloadNumber", "maxWorkHours"], (settings) => {
-        console.log("Settings loaded in content.js:", settings);
 
         const is24HourClock = settings.enable24HourClock || false;
         const maxWorkHours = settings.maxWorkHours || "08:00";
