@@ -4,22 +4,55 @@ const reloadButton = document.getElementById("reloadButton");
 const reloadNumber = document.getElementById("reloadNumber");
 const maxWorkHours = document.getElementById("maxWorkHours");
 const contentElement = document.getElementById("time_to_leave");
+const countdown = document.getElementById("countdown");
+const updateMessage = document.getElementById("update_message");
+const manifest = chrome.runtime.getManifest();
+let remainingTime = "N/A"; // Store remaining time for countdown updates
+
+async function checkForUpdate() {
+    const versionUrl = "https://raw.githubusercontent.com/wiki/uday-sudo/igowhen/version.md";
+    try {
+        const response = await fetch(versionUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const latestVersion = (await response.text()).trim();
+        const currentVersion = manifest.version;
+        console.log(latestVersion, " -- ")
+
+        if (latestVersion !== currentVersion) {
+            updateMessage.innerHTML = `Update available at <a href="https://github.com/uday-sudo/igowhen" target="_blank" style="color: #ff4c4c; text-decoration: underline;">GitHub</a>`;
+            updateMessage.style.color = "#ff4c4c";
+        } else {
+            updateMessage.textContent = `You are on the latest version (${currentVersion})`;
+            updateMessage.style.color = "#4caf50";
+        }
+    } catch (error) {
+        console.error("Error checking for updates:", error);
+    }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     chrome.runtime.sendMessage({ request: "getContent" }, (response) => {
-        if (response && response.content) {
+        if (response && response.endTime && response.remainingTime) {
             console.log("Initial content received");
-            contentElement.textContent = response.content;
+            contentElement.textContent = response.endTime;
+            countdown.textContent = response.remainingTime;
+            // remainingTime = response.remainingTime;
+            // startCountdown();
         } else {
             console.log("No content received from the content script.");
         }
+        checkForUpdate();
     });
 
     // Listen for real-time updates from the content script
     chrome.runtime.onMessage.addListener((message) => {
-        if (message.content) {
+        if (message.endTime && message.remainingTime) {
             console.log("Real-time update received");
-            contentElement.textContent = message.content;
+            contentElement.textContent = message.endTime;
+            countdown.textContent = message.remainingTime;
+            // remainingTime = message.remainingTime;
         }
     });
 });
@@ -67,17 +100,4 @@ function loadSettings() {
 toggleClock.addEventListener("change", saveSettings);
 reloadNumber.addEventListener("input", saveSettings);
 maxWorkHours.addEventListener("input", saveSettings);
-
-// Load settings when the popup is opened
 document.addEventListener("DOMContentLoaded", loadSettings);
-
-// Force reload logic (if applicable)
-// reloadButton.addEventListener("click", () => {
-//     const number = reloadNumber.value;
-//     if (number) {
-//         console.log("Force reload triggered with number:", number);
-//         // You can add additional logic for force reload here if needed
-//     } else {
-//         alert("Please enter a valid reload number.");
-//     }
-// });

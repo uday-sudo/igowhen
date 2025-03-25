@@ -2,8 +2,8 @@
   "name": "Igowhen",
   "description": "igowhen?",
   "version": "1.0",
-  "permissions": ["scripting", "activeTab", "storage"],
-  "host_permissions": ["https://people.zoho.in/*"], 
+  "permissions": ["scripting", "activeTab", "storage", "https://raw.githubusercontent.com/"],
+  "host_permissions": ["https://people.zoho.in/*", "file:///C:/Users/hooman/Downloads/attendance/Zoho%20People.html"], 
   "manifest_version": 3,
   "action": {
     "default_popup": "popup.html",
@@ -14,7 +14,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://people.zoho.in/*/zp#attendance/entry/*"],
+      "matches": ["https://people.zoho.in/*/zp#attendance/entry/*", "file:///C:/Users/hooman/Downloads/attendance/Zoho%20People.html"],
       "js": ["content.js"]
     }
   ]

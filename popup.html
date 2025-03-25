@@ -25,7 +25,7 @@
             color: #f39c12;
         }
 
-        #time_to_leave {
+        .info-box {
             font-size: 18px;
             padding: 15px;
             border: 1px solid #444;
@@ -33,6 +33,18 @@
             border-radius: 8px;
             text-align: center;
             margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .info-box2 {
+            font-size: 14px;
+            padding: 5px;
+            border: 1px solid #444;
+            background: #2b2b2b;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
         }
 
         /* Container and input styling */
@@ -125,7 +137,8 @@
 <body>
     <h1>I go when?</h1>
 
-    <div id="time_to_leave">Loading...</div>
+    <div id="time_to_leave" class="info-box">Loading...</div>
+    <div id="countdown" class="info-box">Countdown: --:--</div>
 
     <div class="toggle-container">
         <input type="checkbox" id="toggleClock">
@@ -142,6 +155,7 @@
         <label for="maxWorkHours">Set Max Work Hours:</label>
         <input type="time" id="maxWorkHours">
     </div>
+    <div id="update_message" class="info-box2">Update Message: ...</div>
 
     <script src="popup.js"></script>
 </body>

@@ -1,4 +1,4 @@
-console.log("content.js executing")
+console.log("content.js executing");
 const RELOADSEC = 5;
 
 function sleep(time) {
@@ -23,8 +23,18 @@ function calculateEndTime(workedTime, maxWork = "08:00", breakTime = "00:00") {
     const [addH, addM] = breakTime.split(":").map(Number);
     const now = new Date();
     const endTime = new Date(now.getTime() + (maxH * 60 + maxM + addH * 60 + addM - workedH * 60 - workedM) * 1000 * 60);
-    const formattedTime = endTime.toTimeString().slice(0, 5);
-    return formattedTime;
+    return endTime;
+}
+
+function calculateRemainingTime(endTime) {
+    const now = new Date();
+    const diffMs = endTime - now;
+
+    if (diffMs <= 0) return "00:00"; // Work time already over
+
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours}:${minutes.toString().padStart(2, "0")}`;
 }
 
 async function executeLogic() {
@@ -36,29 +46,32 @@ async function executeLogic() {
 
         const currentDate = new Date();
         const dayOfWeek = currentDate.getDay();
-        
+
         const divElements = document.querySelectorAll(".zpl_attentrydtls");
         const divArray = Array.from(divElements);
-    
+
         // Filter the array to keep only the divs containing <em>Hrs worked</em>
         const filteredDivArray = divArray.filter(div => /Hrs|Hrs worked/i.test(div.textContent));
-    
-        let endTime = "Couldn't Parse the page";
+
+        let endTimeFormatted = "Couldn't Parse the page";
+        let remainingTime = "N/A";
+
         if (filteredDivArray[dayOfWeek]) {
-            const boldElement = filteredDivArray[dayOfWeek].querySelector("b");    
+            const boldElement = filteredDivArray[dayOfWeek].querySelector("b");
             if (boldElement) {
                 const boldText = boldElement.textContent.trim();
-                endTime = is24HourClock ? calculateEndTime(boldText, maxWorkHours) : convertTo12Hour(calculateEndTime(boldText, maxWorkHours));
+                const endTime = calculateEndTime(boldText, maxWorkHours);
+                remainingTime = calculateRemainingTime(endTime);
+                endTimeFormatted = is24HourClock ? endTime.toTimeString().slice(0, 5) : convertTo12Hour(endTime.toTimeString().slice(0, 5));
             } else {
                 console.log("No <b> tag found inside the <div> with class 'zpl_attentrydtls'.");
             }
         } else {
             console.log("No <div> found with the class 'zpl_attentrydtls'.");
         }
-    
-        // Send the content to the popup
-        chrome.runtime.sendMessage({ content: endTime }, (response) => {
-        });
+
+        // Send endTime and remainingTime to the popup
+        chrome.runtime.sendMessage({ endTime: endTimeFormatted, remainingTime }, (response) => {});
     });
 }
 
