@@ -12,20 +12,45 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             files: ["content.js"],
         });
         console.log("Injected content script on the target page.");
+        chrome.storage.local.set({ targetTabId: tabId });
+        chrome.alarms.create("updateAttendanceData", {
+            periodInMinutes: 0.16
+        });
     }
 });
 
+chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === "updateAttendanceData") {
+        chrome.storage.local.get("targetTabId", (data) => {
+            if (data.targetTabId) {
+                chrome.tabs.sendMessage(data.targetTabId, { action: "requestUpdate" }, (response) => {
+                    if (chrome.runtime.lastError) {
+                        console.log("Could not reach content script: ", chrome.runtime.lastError);
+                    } else if (response) {
+                        console.log("Content script update triggered: ", response.status);
+                    }
+                });
+            }
+        });
+    }
+});
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.content) {
-        chrome.storage.local.set({ content: message.content });
-        chrome.runtime.sendMessage({ content: message.content });
-
-        sendResponse({ status: "Content stored and broadcasted" });
-    } else if (message.request === "getContent") {
-        chrome.storage.local.get("content", (data) => {
-            sendResponse({ content: data.content });
+    if (message.endTime && message.remainingTime) {
+        // Forward the data to any open popups
+        chrome.runtime.sendMessage({ 
+            endTime: message.endTime, 
+            remainingTime: message.remainingTime 
         });
-        return true;
+        
+        sendResponse({ status: "Time data processed" });
+    } else if (message.request === "getContent") {
+        chrome.storage.local.get(["endTime", "remainingTime"], (data) => {
+            sendResponse({ 
+                endTime: data.endTime || "Waiting for data...", 
+                remainingTime: data.remainingTime || "N/A" 
+            });
+        });
+        return true; // Required for async response
     }
 });

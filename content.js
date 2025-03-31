@@ -66,19 +66,33 @@ async function executeLogic() {
             console.log("No <div> found with the class 'zpl_attentrydtls'.");
         }
 
-        // Send endTime and remainingTime to the popup
-        chrome.runtime.sendMessage({ endTime: endTimeFormatted, remainingTime: remainingTimeFormatted }, (response) => {});
+        chrome.storage.local.set({ 
+            endTime: endTimeFormatted, 
+            remainingTime: remainingTimeFormatted,
+            lastUpdateTime: Date.now()
+        });
+        chrome.runtime.sendMessage({ 
+            endTime: endTimeFormatted, 
+            remainingTime: remainingTimeFormatted 
+        }, (response) => {});
     });
 }
 
 function main() {
     executeLogic();
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (message.action === "requestUpdate") {
+            executeLogic();
+            sendResponse({ status: "Update triggered" });
+        }
+        return true;
+    });
+
     setInterval(() => {
         executeLogic();
     }, RELOADSEC * 1000);
 }
 
-// Execute only when the page is fully loaded
 if (
     (
         window.location.href.includes("https://people.zoho.in/") &&
@@ -92,15 +106,12 @@ if (
         const targetDiv = document.querySelector(".zpl_attentrydtls");
         if (targetDiv) {
             console.log("Target content found. Running content script.");
-            clearInterval(checkInterval); // Stop checking once the content is ready
+            clearInterval(checkInterval);
             main();
         }
     }
 
-    // Periodically check for the content every 500ms
     const checkInterval = setInterval(checkContentReady, 500);
-
-    // Optional: Add a timeout to stop checking after 30 seconds
     setTimeout(() => {
         clearInterval(checkInterval);
         console.log("Timeout reached. Content not found.");
