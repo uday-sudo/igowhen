@@ -19,26 +19,15 @@ function isValidTimeFormat(time) {
 
 function calculateEndTime(workedTime, maxWorkHours = 8, maxWorkMinutes = 0, breakTime = "00:00") {
     const [maxH, maxM] = [maxWorkHours, maxWorkMinutes];
-    const [workedH, workedM] = workedTime.split(":").map(Number);
+    let [workedH, workedM, workedS] = workedTime.split(":").map(Number);
+    if (typeof workedS == 'undefined') {
+        workedS = 0;
+    }
     const [addH, addM] = breakTime.split(":").map(Number);
-    const remainingTime = ( (maxH*60*60 + maxM*60) - (workedH*60*60 + workedM*60) ) * 1000
+    const remainingTime = ( (maxH*60*60 + maxM*60) - (workedH*60*60 + workedM*60 + workedS) + (addH*60*60 + addM*60) ) * 1000
     const now = new Date();
     const endTime = new Date(now.getTime() + remainingTime);
-
-    // const formatTime24Hour = (ts) => new Date(ts).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-    // console.log("CAI: ", maxH, ":", maxM, " of ", workedTime, " remain ", remainingTime, " Now: ", formatTime24Hour(now.getTime()))
-    return endTime;
-}
-
-function calculateRemainingTime(endTime) {
-    const now = new Date();
-    const diffMs = endTime - now;
-
-    if (diffMs <= 0) return "00:00"; // Work time already over
-
-    const hours = Math.floor(diffMs / (1000 * 60 * 60));
-    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-    return `${hours}:${minutes.toString().padStart(2, "0")}`;
+    return [remainingTime, endTime];
 }
 
 async function executeLogic() {
@@ -59,13 +48,16 @@ async function executeLogic() {
 
         let endTimeFormatted = "Couldn't Parse the page";
         let remainingTime = "N/A";
+        let remainingTimeFormatted = "N/A";
 
         if (filteredDivArray[dayOfWeek]) {
             const boldElement = filteredDivArray[dayOfWeek].querySelector("b");
             if (boldElement) {
                 const boldText = boldElement.textContent.trim();
-                const endTime = calculateEndTime(boldText, maxWorkHours, maxWorkMinutes);
-                remainingTime = calculateRemainingTime(endTime);
+                const [remainingTime, endTime] = calculateEndTime(boldText, maxWorkHours, maxWorkMinutes);
+                const formatRemainingTime = (ms) => 
+                    new Date(ms).toISOString().slice(11, 19);
+                remainingTimeFormatted = formatRemainingTime(remainingTime);
                 endTimeFormatted = is24HourClock ? endTime.toTimeString().slice(0, 5) : convertTo12Hour(endTime.toTimeString().slice(0, 5));
             } else {
                 console.log("No <b> tag found inside the <div> with class 'zpl_attentrydtls'.");
@@ -75,7 +67,7 @@ async function executeLogic() {
         }
 
         // Send endTime and remainingTime to the popup
-        chrome.runtime.sendMessage({ endTime: endTimeFormatted, remainingTime }, (response) => {});
+        chrome.runtime.sendMessage({ endTime: endTimeFormatted, remainingTime: remainingTimeFormatted }, (response) => {});
     });
 }
 
