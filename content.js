@@ -21,8 +21,12 @@ function calculateEndTime(workedTime, maxWorkHours = 8, maxWorkMinutes = 0, brea
     const [maxH, maxM] = [maxWorkHours, maxWorkMinutes];
     const [workedH, workedM] = workedTime.split(":").map(Number);
     const [addH, addM] = breakTime.split(":").map(Number);
+    const remainingTime = ( (maxH*60*60 + maxM*60) - (workedH*60*60 + workedM*60) ) * 1000
     const now = new Date();
-    const endTime = new Date(now.getTime() + (maxH * 60 + maxM + addH * 60 + addM - workedH * 60 - workedM) * 1000 * 60);
+    const endTime = new Date(now.getTime() + remainingTime);
+
+    // const formatTime24Hour = (ts) => new Date(ts).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+    // console.log("CAI: ", maxH, ":", maxM, " of ", workedTime, " remain ", remainingTime, " Now: ", formatTime24Hour(now.getTime()))
     return endTime;
 }
 
