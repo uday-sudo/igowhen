@@ -17,8 +17,8 @@ function isValidTimeFormat(time) {
     return timeRegex.test(time);
 }
 
-function calculateEndTime(workedTime, maxWork = "08:00", breakTime = "00:00") {
-    const [maxH, maxM] = maxWork.split(":").map(Number);
+function calculateEndTime(workedTime, maxWorkHours = 8, maxWorkMinutes = 0, breakTime = "00:00") {
+    const [maxH, maxM] = [maxWorkHours, maxWorkMinutes];
     const [workedH, workedM] = workedTime.split(":").map(Number);
     const [addH, addM] = breakTime.split(":").map(Number);
     const now = new Date();
@@ -38,10 +38,11 @@ function calculateRemainingTime(endTime) {
 }
 
 async function executeLogic() {
-    chrome.storage.local.get(["enable24HourClock", "reloadNumber", "maxWorkHours"], (settings) => {
+    chrome.storage.local.get(["enable24HourClock", "reloadNumber", "maxWorkHours", "maxWorkMinutes"], (settings) => {
 
         const is24HourClock = settings.enable24HourClock || false;
-        const maxWorkHours = settings.maxWorkHours || "08:00";
+        const maxWorkHours = settings.maxWorkHours || 8;
+        const maxWorkMinutes = settings.maxWorkMinutes || 0;
 
         const currentDate = new Date();
         const dayOfWeek = currentDate.getDay();
@@ -59,7 +60,7 @@ async function executeLogic() {
             const boldElement = filteredDivArray[dayOfWeek].querySelector("b");
             if (boldElement) {
                 const boldText = boldElement.textContent.trim();
-                const endTime = calculateEndTime(boldText, maxWorkHours);
+                const endTime = calculateEndTime(boldText, maxWorkHours, maxWorkMinutes);
                 remainingTime = calculateRemainingTime(endTime);
                 endTimeFormatted = is24HourClock ? endTime.toTimeString().slice(0, 5) : convertTo12Hour(endTime.toTimeString().slice(0, 5));
             } else {

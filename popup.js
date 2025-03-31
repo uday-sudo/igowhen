@@ -3,6 +3,7 @@ const reloadSettings = document.getElementById("reloadSettings");
 const reloadButton = document.getElementById("reloadButton");
 const reloadNumber = document.getElementById("reloadNumber");
 const maxWorkHours = document.getElementById("maxWorkHours");
+const maxWorkMinutes = document.getElementById("maxWorkMinutes");
 const contentElement = document.getElementById("time_to_leave");
 const countdown = document.getElementById("countdown");
 const updateMessage = document.getElementById("update_message");
@@ -71,7 +72,8 @@ function saveSettings() {
     const settings = {
         enable24HourClock: toggleClock.checked,
         reloadNumber: reloadNumber.value,
-        maxWorkHours: maxWorkHours.value
+        maxWorkHours: maxWorkHours.value,
+        maxWorkMinutes: maxWorkMinutes.value
     };
     chrome.storage.local.set(settings, () => {
         console.log("Settings saved:", settings);
@@ -80,7 +82,7 @@ function saveSettings() {
 
 // Function to load settings from local storage
 function loadSettings() {
-    chrome.storage.local.get(["enable24HourClock", "reloadNumber", "maxWorkHours"], (settings) => {
+    chrome.storage.local.get(["enable24HourClock", "reloadNumber", "maxWorkHours", "maxWorkMinutes"], (settings) => {
         if (settings.enable24HourClock !== undefined) {
             toggleClock.checked = settings.enable24HourClock;
         }
@@ -89,6 +91,13 @@ function loadSettings() {
         }
         if (settings.maxWorkHours !== undefined) {
             maxWorkHours.value = settings.maxWorkHours;
+        } else {
+            maxWorkHours.value = 8;
+        }
+        if (settings.maxWorkMinutes !== undefined) {
+            maxWorkMinutes.value = settings.maxWorkMinutes;
+        } else {
+            maxWorkMinutes.value = 0;
         }
         console.log("Settings loaded:", settings);
     });
@@ -97,4 +106,5 @@ function loadSettings() {
 toggleClock.addEventListener("change", saveSettings);
 reloadNumber.addEventListener("input", saveSettings);
 maxWorkHours.addEventListener("input", saveSettings);
+maxWorkMinutes.addEventListener("input", saveSettings);
 document.addEventListener("DOMContentLoaded", loadSettings);

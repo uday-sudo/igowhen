@@ -131,6 +131,30 @@
                 padding: 10px;
             }
         }
+        .time-input-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .time-input-container input {
+            flex: 1;
+            text-align: center;
+            font-size: 16px;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background-color: #333;
+            color: #f0f0f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .time-input-container span {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 10px;
+            color: #f0f0f0;
+        }
     </style>
 </head>
 <body>
@@ -148,11 +172,16 @@
         <input type="number" id="reloadNumber" placeholder="Enter a number">
         <button id="reloadButton">Reload</button>
     </div>
-
+    
     <div class="input-container">
-        <label for="maxWorkHours">Set Max Work Hours:</label>
-        <input type="time" id="maxWorkHours">
+        <label for="workHours">Set Max Work Hours:</label>
+        <div class="time-input-container">
+            <input type="number" id="maxWorkHours" min="0" max="23" step="1" placeholder="HH">
+            <span>:</span>
+            <input type="number" id="maxWorkMinutes" min="0" max="59" step="1" placeholder="MM">
+        </div>
     </div>
+
     <h2>Countdown:</h2>
     <div id="countdown" class="info-box">Countdown: --:--</div>
     <div id="update_message" class="info-box2">Update Message: ...</div>
