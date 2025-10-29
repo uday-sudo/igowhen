@@ -1,7 +1,7 @@
 {
   "name": "Igowhen",
   "description": "igowhen?",
-  "version": "1.1",
+  "version": "1.2",
   "permissions": ["scripting", "activeTab", "storage", "https://raw.githubusercontent.com/", "alarms", "tabs"],
   "host_permissions": ["https://people.zoho.in/*", "file:///C:/Users/hooman/Downloads/attendance/Zoho%20People.html"], 
   "manifest_version": 3,
