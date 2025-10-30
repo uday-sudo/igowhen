@@ -31,9 +31,10 @@ function calculateEndTime(workedTime, maxWorkHours = 8, maxWorkMinutes = 0, brea
 }
 
 async function executeLogic() {
-    chrome.storage.local.get(["enable24HourClock", "reloadNumber", "maxWorkHours", "maxWorkMinutes"], (settings) => {
+    chrome.storage.local.get(["enable24HourClock", "enableOverlay", "reloadNumber", "maxWorkHours", "maxWorkMinutes"], (settings) => {
 
         const is24HourClock = settings.enable24HourClock || false;
+        const enableOverlay = settings.enableOverlay || false;
         const maxWorkHours = settings.maxWorkHours || 8;
         const maxWorkMinutes = settings.maxWorkMinutes || 0;
 
@@ -60,10 +61,10 @@ async function executeLogic() {
                 remainingTimeFormatted = formatRemainingTime(remainingTime);
                 endTimeFormatted = is24HourClock ? endTime.toTimeString().slice(0, 5) : convertTo12Hour(endTime.toTimeString().slice(0, 5));
             } else {
-                console.log("No <b> tag found inside the <div> with class 'zpl_attentrydtls'.");
+                console.error("No <b> tag found inside the <div> with class 'zpl_attentrydtls'.");
             }
         } else {
-            console.log("No <div> found with the class 'zpl_attentrydtls'.");
+            console.error("No <div> found with the class 'zpl_attentrydtls'.");
         }
 
         chrome.storage.local.set({ 

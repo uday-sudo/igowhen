@@ -1,4 +1,5 @@
 const toggleClock = document.getElementById("toggleClock");
+const toggleOverlay = document.getElementById("toggleOverlay");
 const reloadSettings = document.getElementById("reloadSettings");
 const reloadButton = document.getElementById("reloadButton");
 const reloadNumber = document.getElementById("reloadNumber");
@@ -71,6 +72,7 @@ reloadButton.addEventListener("click", () => {
 function saveSettings() {
     const settings = {
         enable24HourClock: toggleClock.checked,
+        enableOverlay: toggleOverlay.checked,
         reloadNumber: reloadNumber.value,
         maxWorkHours: maxWorkHours.value,
         maxWorkMinutes: maxWorkMinutes.value
@@ -82,9 +84,12 @@ function saveSettings() {
 
 // Function to load settings from local storage
 function loadSettings() {
-    chrome.storage.local.get(["enable24HourClock", "reloadNumber", "maxWorkHours", "maxWorkMinutes"], (settings) => {
+    chrome.storage.local.get(["enable24HourClock", "enableOverlay", "reloadNumber", "maxWorkHours", "maxWorkMinutes"], (settings) => {
         if (settings.enable24HourClock !== undefined) {
             toggleClock.checked = settings.enable24HourClock;
+        }
+        if (settings.enableOverlay !== undefined) {
+            toggleOverlay.checked = settings.enableOverlay;
         }
         if (settings.reloadNumber !== undefined) {
             reloadNumber.value = settings.reloadNumber;
@@ -104,6 +109,7 @@ function loadSettings() {
 }
 
 toggleClock.addEventListener("change", saveSettings);
+toggleOverlay.addEventListener("change", saveSettings);
 reloadNumber.addEventListener("input", saveSettings);
 maxWorkHours.addEventListener("input", saveSettings);
 maxWorkMinutes.addEventListener("input", saveSettings);
