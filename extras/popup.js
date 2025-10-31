@@ -7,9 +7,9 @@ const maxWorkHours = document.getElementById("maxWorkHours");
 const maxWorkMinutes = document.getElementById("maxWorkMinutes");
 const contentElement = document.getElementById("time_to_leave");
 const countdown = document.getElementById("countdown");
+const breaktime = document.getElementById("breaktime");
 const updateMessage = document.getElementById("update_message");
 const manifest = chrome.runtime.getManifest();
-let remainingTime = "N/A"; // Store remaining time for countdown updates
 
 async function checkForUpdate() {
     const versionUrl = "https://raw.githubusercontent.com/wiki/uday-sudo/igowhen/version.md";
@@ -34,25 +34,36 @@ async function checkForUpdate() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    chrome.runtime.sendMessage({ request: "getContent" }, (response) => {
-        if (response && response.endTime && response.remainingTime) {
-            console.log("Initial content received");
-            contentElement.textContent = response.endTime;
-            countdown.textContent = response.remainingTime;
-        } else {
-            console.log("No content received from the content script.");
-        }
-    });
+function updateDisplay(data) {
+    if (data.endTime) {
+        contentElement.textContent = data.endTime;
+    }
+    if (data.remainingTime) {
+        countdown.textContent = data.remainingTime;
+    }
+    if (data.breaktime) {
+        breaktime.textContent = data.breaktime;
+    }
+}
 
-    // Listen for real-time updates from the content script
-    chrome.runtime.onMessage.addListener((message) => {
-        if (message.endTime && message.remainingTime) {
-            // console.log("Real-time update received");
-            contentElement.textContent = message.endTime;
-            countdown.textContent = message.remainingTime;
-        }
+// Load data from storage periodically
+function loadFromStorage() {
+    chrome.storage.local.get(["endTime", "remainingTime", "breaktime"], (data) => {
+        updateDisplay({
+            endTime: data.endTime || "Waiting for data...",
+            remainingTime: data.remainingTime || "N/A",
+            breaktime: data.breaktime || "N/A"
+        });
     });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Initial load
+    loadFromStorage();
+    
+    // Poll storage every 500ms to stay in sync with content.js updates
+    setInterval(loadFromStorage, 500);
+    
     checkForUpdate();
 });
 
