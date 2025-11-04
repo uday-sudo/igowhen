@@ -2,191 +2,57 @@
 <html>
 <head>
     <title>I go when?</title>
-    <style>
-        /* General styling */
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
-            background-color: #1f1f1f;
-            color: #e0e0e0;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-width: 300px;
-        }
-
-        h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #f39c12;
-        }
-
-        .info-box {
-            font-size: 18px;
-            padding: 15px;
-            border: 1px solid #444;
-            background: #2b2b2b;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .info-box2 {
-            font-size: 14px;
-            padding: 5px;
-            border: 1px solid #444;
-            background: #2b2b2b;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 20px;
-            width: 100%;
-        }
-
-        /* Container and input styling */
-        .input-container, .toggle-container {
-            width: 100%;
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        label {
-            font-size: 16px;
-            margin-bottom: 8px;
-            color: #bbbbbb;
-        }
-
-        input[type="number"], input[type="time"], input[type="checkbox"] {
-            width: 100%;
-            padding: 10px 0px 10px 10px;
-            font-size: 14px;
-            border: none;
-            border-radius: 6px;
-            background-color: #333;
-            color: #f0f0f0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        input[type="checkbox"] {
-            width: auto;
-            transform: scale(1.2);
-        }
-
-        input[type="number"]::placeholder, input[type="time"]::placeholder {
-            color: #aaa;
-        }
-
-        input:focus {
-            outline: none;
-            border: 1px solid #f39c12;
-        }
-
-        /* Button styling */
-        button {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            background-color: #f39c12;
-            color: #fff;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(243, 156, 18, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #e67e22;
-            box-shadow: 0 4px 8px rgba(243, 156, 18, 0.6);
-        }
-
-        button:active {
-            background-color: #d35400;
-        }
-
-        /* Toggle container */
-        .toggle-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .toggle-container label {
-            font-size: 14px;
-            color: #e0e0e0;
-        }
-
-        #reloadSettings {
-            display: none;
-        }
-
-        /* Responsiveness */
-        @media (max-width: 400px) {
-            body {
-                padding: 10px;
-            }
-        }
-        .time-input-container {
-            display: flex;
-            align-items: center;
-            width: 100%;
-        }
-
-        .time-input-container input {
-            flex: 1;
-            text-align: center;
-            font-size: 16px;
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
-            background-color: #333;
-            color: #f0f0f0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .time-input-container span {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 0 10px;
-            color: #f0f0f0;
-        }
-    </style>
+    <link rel="stylesheet" href="extras/popup.css">
 </head>
 <body>
     <h1>I go when?</h1>
 
     <div id="time_to_leave" class="info-box">Loading...</div>
 
-    <div class="toggle-container">
-        <input type="checkbox" id="toggleClock">
-        <label for="toggleClock">Enable 24-Hour Clock</label>
-    </div>
-
-    <div class="input-container" id="reloadSettings">
-        <label for="reloadNumber">Reload Minutes:</label>
-        <input type="number" id="reloadNumber" placeholder="Enter a number">
-        <button id="reloadButton">Reload</button>
+    <div class="collapsible-header" id="settingsHeader">
+        <span>Settings</span>
+        <span class="arrow" id="settingsArrow">&#9660;</span>
     </div>
     
-    <div class="input-container">
-        <label for="workHours">Set Max Work Hours:</label>
-        <div class="time-input-container">
-            <input type="number" id="maxWorkHours" min="0" max="23" step="1" placeholder="HH">
-            <span>:</span>
-            <input type="number" id="maxWorkMinutes" min="0" max="59" step="1" placeholder="MM">
+    <div class="collapsible-content" id="settingsContent">
+        <div class="toggle-container">
+            <label for="toggleClock">Enable 24-Hour Clock</label>
+            <input type="checkbox" id="toggleClock">
         </div>
+
+        <div class="toggle-container">
+            <label for="toggleOverlay">Enable Page Overlay</label>
+            <input type="checkbox" id="toggleOverlay">
+        </div>
+
+        <div class="input-container" id="reloadSettings">
+            <label for="reloadNumber">Reload Minutes:</label>
+            <input type="number" id="reloadNumber" placeholder="Enter a number">
+            <button id="reloadButton">Reload</button>
+        </div>
+        
+        <fieldset class="time-fieldset">
+            <legend>Minimum Work Hours</legend>
+            <div class="time-input-container-small">
+                <input type="number" id="maxWorkHours" min="0" max="23" step="1" placeholder="HH">
+                <span>:</span>
+                <input type="number" id="maxWorkMinutes" min="0" max="59" step="1" placeholder="MM">
+            </div>
+        </fieldset>
     </div>
 
-    <h2>Countdown:</h2>
-    <div id="countdown" class="info-box">Countdown: --:--</div>
-    <div id="update_message" class="info-box2">Update Message: ...</div>
+    <fieldset class="countdown-fieldset">
+        <legend>Countdown</legend>
+        <div id="countdown" class="countdown-text">--:--:--</div>
+    </fieldset>
+    <fieldset class="countdown-fieldset-small">
+        <legend>Your BreakTime</legend>
+        <div id="breaktime" class="countdown-text-small">--:--:--</div>
+    </fieldset>
+    <div id="update_message" class="info-box2">Waiting for updates...</div>
 
-    <script src="popup.js"></script>
-    <p>Report issues on <a href="https://github.com/uday-sudo/igowhen">github</a> maybe drop a star too.</p>
+    <p>Report issues on <a href="https://github.com/uday-sudo/igowhen" target="_blank">GitHub</a> &middot; Drop a star</p>
+    <script src="extras/popup.js"></script>
+    <script src="extras/collapsible.js"></script>
 </body>
 </html>

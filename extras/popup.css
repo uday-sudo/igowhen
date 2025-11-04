@@ -1,0 +1,469 @@
+
+/* Nord Color Palette */
+:root {
+    --nord0: #2E3440;
+    --nord1: #3B4252;
+    --nord2: #434C5E;
+    --nord3: #4C566A;
+    --nord4: #D8DEE9;
+    --nord5: #E5E9F0;
+    --nord6: #ECEFF4;
+    --nord7: #8FBCBB;
+    --nord8: #88C0D0;
+    --nord9: #81A1C1;
+    --nord10: #5E81AC;
+    --nord11: #BF616A;
+    --nord12: #D08770;
+    --nord13: #EBCB8B;
+    --nord14: #A3BE8C;
+    --nord15: #B48EAD;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    padding: 16px 16px 0px 16px;
+    background: linear-gradient(135deg, var(--nord0) 0%, var(--nord1) 100%);
+    color: var(--nord6);
+    width:300px;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+    text-align: center;
+    background: linear-gradient(135deg, var(--nord8), var(--nord9));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+}
+
+h2 {
+    font-size: 12px;
+    font-weight: 500;
+    margin: 12px 0 6px 0;
+    color: var(--nord4);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.info-box {
+    font-size: 32px;
+    font-weight: 600;
+    padding: 20px;
+    background: var(--nord1);
+    border: 1px solid var(--nord3);
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 12px;
+    color: var(--nord8);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.info-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.info-box2 {
+    font-size: 11px;
+    padding: 8px;
+    background: var(--nord1);
+    border: 1px solid var(--nord3);
+    border-radius: 6px;
+    text-align: center;
+    margin-bottom: 12px;
+    color: var(--nord4);
+    font-style: italic;
+}
+
+/* Container styling */
+.input-container, .toggle-container {
+    width: 100%;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+label {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--nord4);
+    letter-spacing: 0.3px;
+}
+
+input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 13px;
+    border: 2px solid var(--nord3);
+    border-radius: 8px;
+    background-color: var(--nord1);
+    color: var(--nord6);
+    transition: all 0.3s ease;
+}
+
+input[type="number"]::placeholder {
+    color: var(--nord3);
+}
+
+input[type="number"]:focus {
+    outline: none;
+    border-color: var(--nord8);
+    background-color: var(--nord2);
+    box-shadow: 0 0 0 3px rgba(136, 192, 208, 0.1);
+}
+
+/* Button styling */
+button {
+    width: 100%;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--nord8), var(--nord9));
+    color: var(--nord0);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(136, 192, 208, 0.2);
+    margin-top: 6px;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(136, 192, 208, 0.3);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(136, 192, 208, 0.2);
+}
+
+/* Toggle container */
+.toggle-container {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--nord1);
+    border: 1px solid var(--nord3);
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+.toggle-container:hover {
+    background: var(--nord2);
+}
+
+.toggle-container label {
+    font-size: 13px;
+    color: var(--nord5);
+    cursor: pointer;
+    user-select: none;
+    margin: 0;
+    flex: 1;
+}
+
+/* Modern capsule toggle switch */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 44px;
+    height: 24px;
+    background-color: var(--nord3);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+}
+
+input[type="checkbox"]:checked {
+    background: linear-gradient(135deg, var(--nord8), var(--nord9));
+}
+
+input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: var(--nord6);
+    top: 3px;
+    left: 3px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+input[type="checkbox"]:checked::before {
+    transform: translateX(20px);
+}
+
+input[type="checkbox"]:focus {
+    outline: 2px solid var(--nord8);
+    outline-offset: 2px;
+}
+
+#reloadSettings {
+    display: none;
+}
+
+/* Time input container */
+.time-input-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 6px;
+    padding: 10px;
+    background: var(--nord1);
+    border: 2px solid var(--nord3);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.time-input-container:focus-within {
+    border-color: var(--nord8);
+    background: var(--nord2);
+    box-shadow: 0 0 0 3px rgba(136, 192, 208, 0.1);
+}
+
+.time-input-container input {
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 6px;
+    border: none;
+    background: transparent;
+    color: var(--nord6);
+}
+
+.time-input-container input:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+}
+
+.time-input-container span {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--nord8);
+}
+
+/* Time fieldset styling */
+.time-fieldset {
+    border: 2px solid var(--nord3);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    background: transparent;
+}
+
+.time-fieldset legend {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--nord4);
+    padding: 0 8px;
+    margin-left: -4px;
+}
+
+/* Countdown fieldset styling */
+.countdown-fieldset {
+    border: 2px solid var(--nord3);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: transparent;
+}
+
+.countdown-fieldset legend {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--nord4);
+    padding: 0 8px;
+    margin-left: -4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.countdown-text {
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--nord8);
+}
+
+
+/* Countdown fieldset small styling */
+.countdown-fieldset-small {
+    border: 2px solid var(--nord2);
+    border-radius: 8px;
+    padding: 5px;
+    margin-bottom: 10px;
+    background: transparent;
+}
+
+.countdown-fieldset-small legend {
+    font-size: 10px;
+    font-weight: 300;
+    color: var(--nord4);
+    padding: 0 8px;
+    margin-left: -4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.countdown-text-small {
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--nord4);
+}
+
+/* Small time input container */
+.time-input-container-small {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    /* padding: 10px 14px; */
+    /* background: var(--nord2); */
+    /* border: 2px solid var(--nord3); */
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.time-input-container-small input {
+    width: 45px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 8px 4px;
+    border: none;
+    /* background: var(--nord0); */
+    color: var(--nord6);
+    border-radius: 6px;
+    transition: background 0.3s ease;
+}
+
+.time-input-container-small input:focus {
+    outline: none;
+    background: var(--nord1);
+}
+
+.time-input-container-small input::placeholder {
+    color: var(--nord3);
+    font-size: 14px;
+}
+
+.time-input-container-small span {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--nord8);
+}
+
+/* Collapsible section */
+.collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: var(--nord1);
+    border: 1px solid var(--nord3);
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--nord5);
+    user-select: none;
+}
+
+.collapsible-header:hover {
+    background: var(--nord2);
+    border-color: var(--nord8);
+}
+
+.collapsible-header .arrow {
+    transition: transform 0.3s ease;
+    font-size: 10px;
+    display: inline-block;
+}
+
+.collapsible-header.active .arrow {
+    transform: rotate(180deg);
+}
+
+.collapsible-content {
+    display: none;
+}
+
+.collapsible-content.active {
+    display: block;
+}
+
+/* Link styling */
+p {
+    text-align: center;
+    font-size: 11px;
+    color: var(--nord4);
+    margin-top: 12px;
+}
+
+a {
+    color: var(--nord8);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--nord9);
+    text-decoration: underline;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--nord1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--nord3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--nord8);
+}
+
+#settingsContent {
+    flex-direction: column;
+    align-items: center;
+}
+
+#settingsContent > * {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.input-container,
+.toggle-container,
+.time-fieldset {
+    margin-bottom: 8px;
+}
+
+.time-fieldset {
+    padding: 12px;
+}

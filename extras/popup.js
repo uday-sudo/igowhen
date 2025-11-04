@@ -1,4 +1,5 @@
 const toggleClock = document.getElementById("toggleClock");
+const toggleOverlay = document.getElementById("toggleOverlay");
 const reloadSettings = document.getElementById("reloadSettings");
 const reloadButton = document.getElementById("reloadButton");
 const reloadNumber = document.getElementById("reloadNumber");
@@ -6,9 +7,9 @@ const maxWorkHours = document.getElementById("maxWorkHours");
 const maxWorkMinutes = document.getElementById("maxWorkMinutes");
 const contentElement = document.getElementById("time_to_leave");
 const countdown = document.getElementById("countdown");
+const breaktime = document.getElementById("breaktime");
 const updateMessage = document.getElementById("update_message");
 const manifest = chrome.runtime.getManifest();
-let remainingTime = "N/A"; // Store remaining time for countdown updates
 
 async function checkForUpdate() {
     const versionUrl = "https://raw.githubusercontent.com/wiki/uday-sudo/igowhen/version.md";
@@ -33,25 +34,36 @@ async function checkForUpdate() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    chrome.runtime.sendMessage({ request: "getContent" }, (response) => {
-        if (response && response.endTime && response.remainingTime) {
-            console.log("Initial content received");
-            contentElement.textContent = response.endTime;
-            countdown.textContent = response.remainingTime;
-        } else {
-            console.log("No content received from the content script.");
-        }
-    });
+function updateDisplay(data) {
+    if (data.endTime) {
+        contentElement.textContent = data.endTime;
+    }
+    if (data.remainingTime) {
+        countdown.textContent = data.remainingTime;
+    }
+    if (data.breaktime) {
+        breaktime.textContent = data.breaktime;
+    }
+}
 
-    // Listen for real-time updates from the content script
-    chrome.runtime.onMessage.addListener((message) => {
-        if (message.endTime && message.remainingTime) {
-            // console.log("Real-time update received");
-            contentElement.textContent = message.endTime;
-            countdown.textContent = message.remainingTime;
-        }
+// Load data from storage periodically
+function loadFromStorage() {
+    chrome.storage.local.get(["endTime", "remainingTime", "breaktime"], (data) => {
+        updateDisplay({
+            endTime: data.endTime || "Waiting for data...",
+            remainingTime: data.remainingTime || "N/A",
+            breaktime: data.breaktime || "N/A"
+        });
     });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Initial load
+    loadFromStorage();
+    
+    // Poll storage every 500ms to stay in sync with content.js updates
+    setInterval(loadFromStorage, 500);
+    
     checkForUpdate();
 });
 
@@ -71,6 +83,7 @@ reloadButton.addEventListener("click", () => {
 function saveSettings() {
     const settings = {
         enable24HourClock: toggleClock.checked,
+        enableOverlay: toggleOverlay.checked,
         reloadNumber: reloadNumber.value,
         maxWorkHours: maxWorkHours.value,
         maxWorkMinutes: maxWorkMinutes.value
@@ -82,9 +95,12 @@ function saveSettings() {
 
 // Function to load settings from local storage
 function loadSettings() {
-    chrome.storage.local.get(["enable24HourClock", "reloadNumber", "maxWorkHours", "maxWorkMinutes"], (settings) => {
+    chrome.storage.local.get(["enable24HourClock", "enableOverlay", "reloadNumber", "maxWorkHours", "maxWorkMinutes"], (settings) => {
         if (settings.enable24HourClock !== undefined) {
             toggleClock.checked = settings.enable24HourClock;
+        }
+        if (settings.enableOverlay !== undefined) {
+            toggleOverlay.checked = settings.enableOverlay;
         }
         if (settings.reloadNumber !== undefined) {
             reloadNumber.value = settings.reloadNumber;
@@ -104,6 +120,7 @@ function loadSettings() {
 }
 
 toggleClock.addEventListener("change", saveSettings);
+toggleOverlay.addEventListener("change", saveSettings);
 reloadNumber.addEventListener("input", saveSettings);
 maxWorkHours.addEventListener("input", saveSettings);
 maxWorkMinutes.addEventListener("input", saveSettings);

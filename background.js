@@ -40,15 +40,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // Forward the data to any open popups
         chrome.runtime.sendMessage({ 
             endTime: message.endTime, 
-            remainingTime: message.remainingTime 
+            remainingTime: message.remainingTime,
+            breaktime: message.breaktime,
         });
         
         sendResponse({ status: "Time data processed" });
     } else if (message.request === "getContent") {
-        chrome.storage.local.get(["endTime", "remainingTime"], (data) => {
+        chrome.storage.local.get(["endTime", "remainingTime", "breaktime"], (data) => {
             sendResponse({ 
                 endTime: data.endTime || "Waiting for data...", 
-                remainingTime: data.remainingTime || "N/A" 
+                remainingTime: data.remainingTime || "N/A",
+                breaktime: data.breaktime || "N/A",
             });
         });
         return true; // Required for async response

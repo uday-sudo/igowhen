@@ -1,47 +1,71 @@
-# I go when?
+# 🚀 I Go When?
 
-A question worth answering, follow the guiode below to get the answer:
+A **simple yet powerful Chrome extension** that helps you with your **Zoho People attendance** — because who doesn’t want to know *when they go*? 😄
 
-```
-Note: This extension works for attendance page on people.zoho.in only.
+> ⚙️ **Note:**  
+> This extension works **only** on the attendance page of [people.zoho.in](https://people.zoho.in).  
+> ✅ **Supported Browsers:** Chromium-based only (e.g., Chrome, Edge, Brave, etc.)
 
-Only chromium based browser's are supported.
-```
+---
 
-### Step 1:
-Navigate to [Releases](https://github.com/uday-sudo/igowhen/releases) Page and download the latest release:
+## 🧭 Step 1: Download the Latest Release
+
+Head over to the [**Releases Page**](https://github.com/uday-sudo/igowhen/releases) on GitHub and grab the **latest release**.
 
 ![Alt text](guide/ss1.png)
 
-### Step 2:
-Extract the archive to any location
+---
+
+## 📦 Step 2: Extract the Archive
+
+Unzip or extract the downloaded archive to **any convenient location** on your system.
 
 ![Alt text](guide/ss2.png)
 
-### Step 3:
-Navigate to the extension page in your browser.
-It can normally be done by pasting this to the url bar.
+---
 
-```chrome://extensions```
+## 🌐 Step 3: Open the Extensions Page
 
-Or through the browser menu:
+Navigate to your browser’s extensions management page.
+
+You can do this in two ways:
+
+- Paste this directly in your address bar:
+  ```
+  chrome://extensions
+  ```
+- Or open it manually through the browser menu:
 
 ![Alt text](guide/ss4.png)
 
-### Step 4:
-Enable developer mode, toggle it ON.
-![alt text](guide/ss3.png)
+---
 
-Click on ```Load Unpacked``` button
+## 🧩 Step 4: Load the Extension
 
-![alt text](guide/ss5.png)
+1. **Enable Developer Mode** — toggle the switch **ON** (top right corner).
 
-Navigate to where the archive was extracted:
+   ![Alt text](guide/ss3.png)
 
-![alt text](guide/ss6.png)
+2. Click the **“Load Unpacked”** button.
 
-Now reload the attendance page
+   ![Alt text](guide/ss5.png)
 
-### Optionally, Pin the extension
+3. Browse to the folder where you **extracted** the archive and select it.
 
-![alt text](guide/ss7.png)
+   ![Alt text](guide/ss6.png)
+
+4. Once loaded, **reload your attendance page** on Zoho People.
+
+---
+
+## 📌 Optional: Pin the Extension
+
+For quick access, you can **pin the extension** to your browser toolbar.
+
+![Alt text](guide/ss7.png)
+
+---
+
+✨ **That’s it!**  
+You’re all set to use *I Go When* — effortless, seamless, and stylish.  
+Happy tracking! 🕒
