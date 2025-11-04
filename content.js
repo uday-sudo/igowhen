@@ -147,6 +147,82 @@ function extractCheckInTime() {
     return null;
 }
 
+// Overlay Functions
+function createOverlay() {
+    // Check if overlay already exists
+    if (document.getElementById("igowhen-overlay")) {
+        return;
+    }
+
+    // Find the target container
+    const targetContainer = document.querySelector(".zpl_act.zpl_attnLstvw");
+    if (!targetContainer) {
+        console.error("Target container .zpl_act.zpl_attnLstvw not found");
+        return;
+    }
+
+    const overlay = document.createElement("div");
+    overlay.id = "igowhen-overlay";
+    overlay.style.cssText = `
+        position: absolute;
+        bottom: 6px;
+        right: 18px;
+        background: #ffffff;
+        color: #333333;
+        padding: 10px 14px;
+        border-radius: 4px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 10px;
+        z-index: 1000;
+        min-width: 140px;
+    `;
+
+    overlay.innerHTML = `
+        <div id="igowhen-time" style="font-size: 18px; font-weight: 600; letter-spacing: 0.3px; color: #333333ff; margin-bottom: 3px;">
+            --:--
+        </div>
+        <div id="igowhen-countdown" style="font-size: 10px; color: #5f6368; font-weight: 400;">
+            <span style="font-weight: 500;">--:--:--</span> left
+        </div>
+    `;
+
+    // Ensure parent has relative positioning
+    if (getComputedStyle(targetContainer).position === 'static') {
+        targetContainer.style.position = 'relative';
+    }
+
+    targetContainer.appendChild(overlay);
+    console.log("Overlay created inside .zpl_act.zpl_attnLstvw");
+}
+
+function updateOverlay(endTime, remainingTime) {
+    const timeElement = document.getElementById("igowhen-time");
+    const countdownElement = document.getElementById("igowhen-countdown");
+    
+    if (timeElement) {
+        timeElement.textContent = endTime || "--:--";
+    }
+    if (countdownElement) {
+        countdownElement.textContent = `Remaining: ${remainingTime || "--:--:--"}`;
+    }
+}
+
+function removeOverlay() {
+    const overlay = document.getElementById("igowhen-overlay");
+    if (overlay) {
+        overlay.remove();
+        console.log("Overlay removed");
+    }
+}
+
+function toggleOverlayVisibility(enableOverlay) {
+    if (enableOverlay) {
+        createOverlay();
+    } else {
+        removeOverlay();
+    }
+}
+
 // Main Logic
 async function executeLogic() {
     chrome.storage.local.get(
@@ -166,7 +242,6 @@ async function executeLogic() {
 
             const workedTime = extractWorkedHours(dayOfWeek);
             const checkInTime = extractCheckInTime();
-            // console.log(checkInTime)
 
             if (checkInTime && workedTime) {
                 const breakTime = calculateBreakTime(checkInTime, workedTime);
@@ -179,7 +254,6 @@ async function executeLogic() {
                     maxWorkHours, 
                     maxWorkMinutes
                 );
-                // console.log("HELLO", remainingTime);
                 
                 remainingTimeFormatted = formatTime(remainingTime);
                 endTimeFormatted = is24HourClock 
@@ -194,6 +268,12 @@ async function executeLogic() {
                 breaktime: breakTimeFormatted,
                 lastUpdateTime: Date.now()
             });
+            
+            // Update overlay
+            toggleOverlayVisibility(enableOverlay);
+            if (enableOverlay) {
+                updateOverlay(endTimeFormatted, remainingTimeFormatted);
+            }
             
             // Send message to extension (with error handling)
             chrome.runtime.sendMessage({ 
@@ -220,6 +300,13 @@ function main() {
             sendResponse({ status: "Update triggered" });
         }
         return true;
+    });
+
+    // Listen for settings changes
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        if (namespace === "local" && changes.enableOverlay) {
+            toggleOverlayVisibility(changes.enableOverlay.newValue);
+        }
     });
 
     // Periodic updates
