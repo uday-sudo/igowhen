@@ -1,3 +1,7 @@
+if (typeof browser === "undefined") {
+  var browser = chrome;
+}
+
 const toggleClock = document.getElementById("toggleClock");
 const toggleOverlay = document.getElementById("toggleOverlay");
 const reloadSettings = document.getElementById("reloadSettings");
@@ -9,7 +13,7 @@ const contentElement = document.getElementById("time_to_leave");
 const countdown = document.getElementById("countdown");
 const breaktime = document.getElementById("breaktime");
 const updateMessage = document.getElementById("update_message");
-const manifest = chrome.runtime.getManifest();
+const manifest = browser.runtime.getManifest();
 
 async function checkForUpdate() {
     const versionUrl = "https://raw.githubusercontent.com/wiki/uday-sudo/igowhen/version.md";
@@ -48,7 +52,7 @@ function updateDisplay(data) {
 
 // Load data from storage periodically
 function loadFromStorage() {
-    chrome.storage.local.get(["endTime", "remainingTime", "breaktime"], (data) => {
+    browser.storage.local.get(["endTime", "remainingTime", "breaktime"], (data) => {
         updateDisplay({
             endTime: data.endTime || "Waiting for data...",
             remainingTime: data.remainingTime || "N/A",
@@ -71,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
 reloadButton.addEventListener("click", () => {
     const reloadNumber = document.getElementById("reloadNumber").value;
     if (reloadNumber) {
-        chrome.runtime.sendMessage({ action: "forceReload", number: reloadNumber }, (response) => {
+        browser.runtime.sendMessage({ action: "forceReload", number: reloadNumber }, (response) => {
             console.log("Page reload triggered:", response);
         });
     } else {
@@ -88,14 +92,14 @@ function saveSettings() {
         maxWorkHours: maxWorkHours.value,
         maxWorkMinutes: maxWorkMinutes.value
     };
-    chrome.storage.local.set(settings, () => {
+    browser.storage.local.set(settings, () => {
         console.log("Settings saved:", settings);
     });
 }
 
 // Function to load settings from local storage
 function loadSettings() {
-    chrome.storage.local.get(["enable24HourClock", "enableOverlay", "reloadNumber", "maxWorkHours", "maxWorkMinutes"], (settings) => {
+    browser.storage.local.get(["enable24HourClock", "enableOverlay", "reloadNumber", "maxWorkHours", "maxWorkMinutes"], (settings) => {
         if (settings.enable24HourClock !== undefined) {
             toggleClock.checked = settings.enable24HourClock;
         }

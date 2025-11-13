@@ -1,31 +1,54 @@
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    console.log(tab.url);
-    if (
-        changeInfo.status === "complete" &&
-        tab.url &&
-        (
-            (tab.url.startsWith("https://people.zoho.in/") && tab.url.includes("zp#attendance/entry/summary-mode:list"))
-        )
-    ) {
-        chrome.scripting.executeScript({
-            target: { tabId: tabId },
-            files: ["content.js"],
-        });
-        console.log("Injected content script on the target page.");
-        chrome.storage.local.set({ targetTabId: tabId });
-        chrome.alarms.create("updateAttendanceData", {
-            periodInMinutes: 0.16
-        });
+if (typeof browser === "undefined") {
+  var browser = chrome;
+}
+
+
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  console.log("Tab updated:", tab.url);
+
+  if (
+    changeInfo.status === "complete" &&
+    tab.url &&
+    (
+      tab.url.startsWith("https://people.zoho.in/") &&
+      tab.url.includes("zp#attendance/entry/summary-mode:list")
+    )
+  ) {
+    console.log("Target URL matched. Injecting content.js...");
+
+    // Handle script injection for Chrome (MV3) vs Firefox (MV2)
+    if (browser.scripting && browser.scripting.executeScript) {
+      // ✅ Chrome MV3
+      browser.scripting.executeScript({
+        target: { tabId: tabId },
+        files: ["content.js"],
+      });
+    } else if (browser.tabs && browser.tabs.executeScript) {
+      // ✅ Firefox MV2 fallback
+      browser.tabs.executeScript(tabId, { file: "content.js" });
+    } else {
+      console.warn("No script injection API available in this browser.");
     }
+
+    // Store target tab ID
+    browser.storage.local.set({ targetTabId: tabId });
+
+    // Create periodic alarm
+    if (browser.alarms && browser.alarms.create) {
+      browser.alarms.create("updateAttendanceData", {
+        periodInMinutes: 0.16,
+      });
+    }
+  }
 });
 
-chrome.alarms.onAlarm.addListener((alarm) => {
+browser.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === "updateAttendanceData") {
-        chrome.storage.local.get("targetTabId", (data) => {
+        browser.storage.local.get("targetTabId", (data) => {
             if (data.targetTabId) {
-                chrome.tabs.sendMessage(data.targetTabId, { action: "requestUpdate" }, (response) => {
-                    if (chrome.runtime.lastError) {
-                        console.log("Could not reach content script: ", chrome.runtime.lastError);
+                browser.tabs.sendMessage(data.targetTabId, { action: "requestUpdate" }, (response) => {
+                    if (browser.runtime.lastError) {
+                        console.log("Could not reach content script: ", browser.runtime.lastError);
                     } else if (response) {
                         console.log("Content script update triggered: ", response.status);
                     }
@@ -35,10 +58,10 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     }
 });
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.endTime && message.remainingTime) {
         // Forward the data to any open popups
-        chrome.runtime.sendMessage({ 
+        browser.runtime.sendMessage({ 
             endTime: message.endTime, 
             remainingTime: message.remainingTime,
             breaktime: message.breaktime,
@@ -46,7 +69,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         
         sendResponse({ status: "Time data processed" });
     } else if (message.request === "getContent") {
-        chrome.storage.local.get(["endTime", "remainingTime", "breaktime"], (data) => {
+        browser.storage.local.get(["endTime", "remainingTime", "breaktime"], (data) => {
             sendResponse({ 
                 endTime: data.endTime || "Waiting for data...", 
                 remainingTime: data.remainingTime || "N/A",

@@ -1,3 +1,7 @@
+if (typeof browser === "undefined") {
+  var browser = chrome;
+}
+
 console.log("content.js executing");
 
 // Constants
@@ -50,13 +54,21 @@ function calculateEndTime(workedTime, maxWorkHours = 8, maxWorkMinutes = 0, brea
     let [workedH, workedM, workedS = 0] = workedTime.split(":").map(Number);
     const [addH, addM] = breakTime.split(":").map(Number);
     
-    const remainingTime = ((maxH * 60 * 60 + maxM * 60) - 
-                          (workedH * 60 * 60 + workedM * 60 + workedS) + 
-                          (addH * 60 * 60 + addM * 60)) * 1000;
-    
+    const maxSeconds = maxH * 3600 + maxM * 60;
+    const workedSeconds = workedH * 3600 + workedM * 60 + workedS;
+    const breakSeconds = addH * 3600 + addM * 60;
+
+    // Calculate remaining time (in milliseconds)
+    let remainingTime = (maxSeconds - workedSeconds + breakSeconds) * 1000;
+
+    // ✅ If remaining time exceeds maxWork time (i.e. negative), set to 0
+    if (remainingTime < 0) {
+        remainingTime = 0;
+    }
+
     const now = new Date();
     const endTime = new Date(now.getTime() + remainingTime);
-    
+
     return [remainingTime, endTime];
 }
 
@@ -181,7 +193,7 @@ function createOverlay() {
         <div id="igowhen-time" style="font-size: 18px; font-weight: 600; letter-spacing: 0.3px; color: #333333ff; margin-bottom: 3px;">
             --:--
         </div>
-        <div id="igowhen-countdown" style="font-size: 10px; color: #5f6368; font-weight: 400;">
+        <div id="igowhen-countdown" style="font-size: 14px; color: #5f6368; font-weight: 400;">
             <span style="font-weight: 500;">--:--:--</span> left
         </div>
     `;
@@ -225,7 +237,7 @@ function toggleOverlayVisibility(enableOverlay) {
 
 // Main Logic
 async function executeLogic() {
-    chrome.storage.local.get(
+    browser.storage.local.get(
         ["enable24HourClock", "enableOverlay", "reloadNumber", "maxWorkHours", "maxWorkMinutes"], 
         (settings) => {
             const is24HourClock = settings.enable24HourClock || false;
@@ -262,7 +274,7 @@ async function executeLogic() {
             }
 
             // Save to storage
-            chrome.storage.local.set({ 
+            browser.storage.local.set({ 
                 endTime: endTimeFormatted, 
                 remainingTime: remainingTimeFormatted,
                 breaktime: breakTimeFormatted,
@@ -276,14 +288,14 @@ async function executeLogic() {
             }
             
             // Send message to extension (with error handling)
-            chrome.runtime.sendMessage({ 
+            browser.runtime.sendMessage({ 
                 endTime: endTimeFormatted, 
                 remainingTime: remainingTimeFormatted,
                 breaktime: breakTimeFormatted
             }, (response) => {
-                if (chrome.runtime.lastError) {
+                if (browser.runtime.lastError) {
                     // Suppress error - receiver might not be active
-                    console.debug("Message sent but no receiver:", chrome.runtime.lastError.message);
+                    console.debug("Message sent but no receiver:", browser.runtime.lastError.message);
                 }
             });
         }
@@ -294,7 +306,7 @@ function main() {
     executeLogic();
     
     // Listen for update requests
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if (message.action === "requestUpdate") {
             executeLogic();
             sendResponse({ status: "Update triggered" });
@@ -303,7 +315,7 @@ function main() {
     });
 
     // Listen for settings changes
-    chrome.storage.onChanged.addListener((changes, namespace) => {
+    browser.storage.onChanged.addListener((changes, namespace) => {
         if (namespace === "local" && changes.enableOverlay) {
             toggleOverlayVisibility(changes.enableOverlay.newValue);
         }
