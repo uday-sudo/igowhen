@@ -7,52 +7,96 @@
 <body>
     <h1>I go when?</h1>
 
-    <div id="time_to_leave" class="info-box">Loading...</div>
-
-    <div class="collapsible-header" id="settingsHeader">
-        <span>Settings</span>
-        <span class="arrow" id="settingsArrow">&#9660;</span>
+    <!-- Tab Navigation -->
+    <div class="tab-container">
+        <button class="tab-button active" data-tab="auto">Auto Track</button>
+        <button class="tab-button" data-tab="manual">Manual Track</button>
     </div>
-    
-    <div class="collapsible-content" id="settingsContent">
-        <div class="toggle-container">
-            <label for="toggleClock">Enable 24-Hour Clock</label>
-            <input type="checkbox" id="toggleClock">
-        </div>
 
-        <div class="toggle-container">
-            <label for="toggleOverlay">Enable Page Overlay</label>
-            <input type="checkbox" id="toggleOverlay">
-        </div>
+    <!-- Auto Track Tab -->
+    <div id="auto-tab" class="tab-content active">
+        <div id="time_to_leave" class="info-box">Loading...</div>
 
-        <div class="input-container" id="reloadSettings">
-            <label for="reloadNumber">Reload Minutes:</label>
-            <input type="number" id="reloadNumber" placeholder="Enter a number">
-            <button id="reloadButton">Reload</button>
+        <div class="collapsible-header" id="settingsHeader">
+            <span>Settings</span>
+            <span class="arrow" id="settingsArrow">&#9660;</span>
         </div>
         
-        <fieldset class="time-fieldset">
-            <legend>Minimum Work Hours</legend>
-            <div class="time-input-container-small">
-                <input type="number" id="maxWorkHours" min="0" max="23" step="1" placeholder="HH">
-                <span>:</span>
-                <input type="number" id="maxWorkMinutes" min="0" max="59" step="1" placeholder="MM">
+        <div class="collapsible-content" id="settingsContent">
+            <div class="toggle-container">
+                <label for="toggleClock">Enable 24-Hour Clock</label>
+                <input type="checkbox" id="toggleClock">
             </div>
+
+            <div class="toggle-container">
+                <label for="toggleOverlay">Enable Page Overlay</label>
+                <input type="checkbox" id="toggleOverlay">
+            </div>
+
+            <div class="input-container" id="reloadSettings">
+                <label for="reloadNumber">Reload Minutes:</label>
+                <input type="number" id="reloadNumber" placeholder="Enter a number">
+                <button id="reloadButton">Reload</button>
+            </div>
+            
+            <fieldset class="time-fieldset">
+                <legend>Minimum Work Hours</legend>
+                <div class="time-input-container-small">
+                    <input type="number" id="maxWorkHours" min="0" max="23" step="1" placeholder="HH">
+                    <span>:</span>
+                    <input type="number" id="maxWorkMinutes" min="0" max="59" step="1" placeholder="MM">
+                </div>
+            </fieldset>
+        </div>
+
+        <fieldset class="countdown-fieldset">
+            <legend>Countdown</legend>
+            <div id="countdown" class="countdown-text">--:--:--</div>
+        </fieldset>
+        <fieldset class="countdown-fieldset-small">
+            <legend>Your BreakTime</legend>
+            <div id="breaktime" class="countdown-text-small">--:--:--</div>
         </fieldset>
     </div>
 
-    <fieldset class="countdown-fieldset">
-        <legend>Countdown</legend>
-        <div id="countdown" class="countdown-text">--:--:--</div>
-    </fieldset>
-    <fieldset class="countdown-fieldset-small">
-        <legend>Your BreakTime</legend>
-        <div id="breaktime" class="countdown-text-small">--:--:--</div>
-    </fieldset>
+    <!-- Manual Track Tab -->
+    <div id="manual-tab" class="tab-content">
+        <div class="manual-controls">
+            <button id="punchInBtn" class="punch-button punch-in">Punch In</button>
+            <button id="punchOutBtn" class="punch-button punch-out">Punch Out</button>
+        </div>
+
+        <div class="manual-summary">
+            <div class="summary-item">
+                <span class="summary-label">Total Worked:</span>
+                <span id="manualTotalWorked" class="summary-value">00:00:00</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Time to Go:</span>
+                <span id="manualEndTime" class="summary-value">--:--</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Remaining:</span>
+                <span id="manualRemaining" class="summary-value">--:--:--</span>
+            </div>
+        </div>
+
+        <div class="punch-entries">
+            <h3>Today's Entries</h3>
+            <div id="entriesList" class="entries-list">
+                <!-- Entries will be dynamically added here -->
+            </div>
+        </div>
+
+        <button id="addManualEntry" class="add-entry-btn">+ Add Manual Entry</button>
+    </div>
+
     <div id="update_message" class="info-box2">Waiting for updates...</div>
 
     <p>Report issues on <a href="https://github.com/uday-sudo/igowhen" target="_blank">GitHub</a> &middot; Drop a star</p>
     <script src="extras/popup.js"></script>
     <script src="extras/collapsible.js"></script>
+    <script src="extras/tabs.js"></script>
+    <script src="extras/manual-tracking.js"></script>
 </body>
 </html>
