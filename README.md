@@ -4,65 +4,40 @@ A **simple yet powerful Chrome extension** that helps you with your **Zoho Peopl
 
 > ⚙️ **Note:**  
 > This extension works **only** on the attendance page of [people.zoho.in](https://people.zoho.in).  
-> ✅ **Supported Browsers:** Chromium-based only (e.g., Chrome, Edge, Brave, etc.)
+> ✅ **Supported Browsers:** Chromium-based (e.g., Chrome, Edge, Brave, etc.) and Firefox.
 
 ---
 
-## 🧭 Step 1: Download the Latest Release
+## 🧭 Install from Release
 
-Head over to the [**Releases Page**](https://github.com/uday-sudo/igowhen/releases) on GitHub and grab the **latest release**.
+1. Grab the latest zip from the [**Releases Page**](https://github.com/uday-sudo/igowhen/releases).  
+2. Extract it anywhere.
 
-![Alt text](guide/ss1.png)
+### Chromium (Chrome / Edge / Brave)
+- Open `chrome://extensions`, toggle **Developer mode**.
+- Click **Load unpacked** and pick the extracted folder (it contains `manifest.json`).
 
----
+### Firefox
+- Run `./create_firefox.sh` (or download `firefox_src.zip` if provided in the release) to generate the Firefox MV2 bundle in `build_firefox/` (and a `firefox_src.zip`).
+- Open `about:debugging#/runtime/this-firefox` → **Load Temporary Add-on…** → choose any file inside `build_firefox/` (e.g., `manifest.json`).
 
-## 📦 Step 2: Extract the Archive
+> Tip: for day-to-day dev, load `chromium_src/` in Chromium and `build_firefox/` in Firefox after running `./create_firefox.sh`.
 
-Unzip or extract the downloaded archive to **any convenient location** on your system.
-
-![Alt text](guide/ss2.png)
-
----
-
-## 🌐 Step 3: Open the Extensions Page
-
-Navigate to your browser’s extensions management page.
-
-You can do this in two ways:
-
-- Paste this directly in your address bar:
-  ```
-  chrome://extensions
-  ```
-- Or open it manually through the browser menu:
-
-![Alt text](guide/ss4.png)
-
----
-
-## 🧩 Step 4: Load the Extension
-
-1. **Enable Developer Mode** — toggle the switch **ON** (top right corner).
-
-   ![Alt text](guide/ss3.png)
-
-2. Click the **“Load Unpacked”** button.
-
-   ![Alt text](guide/ss5.png)
-
-3. Browse to the folder where you **extracted** the archive and select it.
-
-   ![Alt text](guide/ss6.png)
-
-4. Once loaded, **reload your attendance page** on Zoho People.
+Once loaded, reload the Zoho People attendance page.
 
 ---
 
 ## 📌 Optional: Pin the Extension
 
-For quick access, you can **pin the extension** to your browser toolbar.
+For quick access, pin it to your toolbar. (Chromium: puzzle icon → pin; Firefox: right‑click toolbar → Pin.)
 
-![Alt text](guide/ss7.png)
+---
+
+## 🛠️ Development quick start
+- `chromium_src/`: Manifest V3 source (Chrome/Edge/Brave).
+- `create_firefox.sh`: builds Manifest V2 Firefox package into `build_firefox/` and `firefox_src.zip`.
+- UI scripts live under `chromium_src/extras/` (shared by both browsers).
+- Test manually by loading `chromium_src/` and `build_firefox/` simultaneously in their respective browsers.
 
 ---
 
